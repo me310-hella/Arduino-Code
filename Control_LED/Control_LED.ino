@@ -26,13 +26,14 @@ void loop()
 {
    if(Serial.available() > 0)      // Send data only when you receive data:
    {
-      data = Serial.read();        //Read the incoming data & store into data
-      Serial.write("0,0");          //Print Value inside data in Serial monitor
-      Serial.write("\n");        
+      data = Serial.read();        //Read the incoming data & store into data        
       if(strcmp(data, "1")){
         toggleLED();
+        Serial.write("1\n1");
       }
    }
+   //Serial.write("0,0");          //Print Value inside data in Serial monitor
+   //Serial.write("\n");
 }
 
 

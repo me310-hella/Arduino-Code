@@ -1,3 +1,5 @@
+#include <math.h>
+
 #define FASTADC 1
 
 //////////// Make the arduino faster //////////////
@@ -45,7 +47,7 @@ int getPiezoValue(int analogValue){
 }
 
 long getEventTime(int pin){
-  if(analogRead(pin) > 0){
+  if(analogRead(pin) > 150){
     return micros();
   }
   return 0;
@@ -55,7 +57,7 @@ void loop() {
   //Serial.print("Blocking: ");
   //Serial.println(blocking);
   
-  if(millis() - timeFrameStart < 250L){
+  if(millis() - timeFrameStart < 1000L){
     if(events[0] == 0L){
       events[0] = getEventTime(PIEZO_PIN_DR);
     }
@@ -67,7 +69,15 @@ void loop() {
       Serial.print(":");
       Serial.println(events[1]);*/
       long delta = events[1] - events[0];
+      /*if(events[0] < events[1]){
+        Serial.println("right");
+      } else Serial.println("left");*/
       Serial.println(delta);
+      /*Serial.print(events[0]);
+      Serial.print(":");
+      Serial.println(events[1]);*/
+      //double angle = asin((abs(delta) * 0.0025) / 0.3);
+      //Serial.println(angle);
       blocking = true;
     }
   } 
@@ -76,3 +86,4 @@ void loop() {
   }
 
 }
+
