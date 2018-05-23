@@ -1,10 +1,12 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial BTSerial(0, 1); // RX | TX //10,11
-int sensorPin = A1; //LEFT PIN
-int sensorValue = 0;
+const int sensorPinLeft = A1; // Pin where you plug the sensor in
+const int sensorPinRight = A0; // Pin where you plug the sensor in
+int sensorValueLeft = 0;
+int sensorValueRight = 0;
 
-int THRESHOLD = 150;
+const int THRESHOLD = 150; // You have to adjust this threshold according to what signals come out of the sensor
 
 void setup() 
 {
@@ -25,9 +27,19 @@ void loop()
 //(every Value has to be seperated through a comma (',') and the message has to
 //end with a semikolon (';'))
 
-sensorValue = analogRead(sensorPin);
-if(sensorValue > THRESHOLD){
-  Serial.println(sensorValue);
+sensorValueLeft = analogRead(sensorPinLeft);
+sensorValueRight = analogRead(sensorPinRight);
+
+if(sensorValueLeft > THRESHOLD || sensorValueRight > THRESHOLD){
+  if(sensorValueLeft > sensorValueRight){
+    Serial.print("prev\n");
+  }
+  else {
+     Serial.print("next\n");
+  }
+
+  //Serial.println(sensorValue);
+  //Serial.print("prev\n");
   /*BTSerial.print("1");
   BTSerial.print(",");
   BTSerial.print("1");
