@@ -17,76 +17,73 @@
 //A4  A5
 ///////
 
-const int THRESHOLD = 0;
+
+const int PINS[] = {A0, A1, A2, A3, A4, A5};
+const int THRESHOLDS[] = {30, 30, 30, 30, 30, 30};
+const int TIME_FRAME = 250;
 int sensorValues[] = {0,0,0,0,0,0};
+long start;
 
 void setup() {
   Serial.begin(9600);
-}
-
-void printValue(int value) {
-  if (value > THRESHOLD) {
-    Serial.println(value);
-  }
 }
 
 int maxFromArray(int sensorValues[], int arrayLength){
   int maxValue = 0;
   int maxIndex = -1;
   for (int i=0; i<arrayLength; i++){
-    Serial.print(sensorValues[i]);
-    Serial.print(",");
-    
-    //maxValue = max(maxValue, sensorValues[i]);
     if(sensorValues[i] > maxValue){
       maxValue = sensorValues[i];
       maxIndex = i;
     }
   }
-  Serial.println();
   return maxIndex;
 }
 
-int readValue(int pin){
+int readValue(int readIndex){
+  int threshold = THRESHOLDS[readIndex];
+  int pin = PINS[readIndex];
   int sensorValue = analogRead(pin);
-  if(sensorValue > THRESHOLD){
+  if(sensorValue > threshold){
     return sensorValue;
   }
   else return 0;
 }
 
+void printArray(int values[], int length) {
+  for (int i = 0; i < length; i ++) {
+    Serial.print(values[i]);
+    Serial.print(",");
+  }
+  Serial.println();
+}
+
+void initValues(int values[], int length) {
+  for (int i = 0; i < length; i ++) {
+    values[i] = 0;
+  }
+}
+
+bool updateValues(int values[], int length) {
+  bool changed = false;
+  for (int i = 0; i < length; i ++) {
+    int newValue = max(values[i], readValue(i));
+    changed = newValue > 0;
+    values[i] = newValue;
+  }
+  return changed;
+}
+
 void loop() {
-  //Serial.print(sensorValues[0]);
- //Serial.print(",");
- sensorValues[0] = readValue(A0);
- sensorValues[1]= readValue(A1);
- sensorValues[2] = readValue(A2);
- sensorValues[3] = readValue(A3);
- sensorValues[4] = readValue(A4);
- //sensorValues[5] = analogRead(A6);
-
-
-int maxIndex = maxFromArray(sensorValues, 5);
-/*if(maxIndex > -1){
-  Serial.println(maxIndex);   
-}*/
-
-
-//  printValue(sensorValue_5);
- 
-// Serial.print(sensorValue_0);
-// Serial.print(",");
-// Serial.print(sensorValue_1);
-// Serial.print(",");
-// Serial.print(sensorValue_2);
-// Serial.print(",");
-// Serial.print(sensorValue_3);
-// Serial.print(",");
-// Serial.print(sensorValue_4);
-// Serial.print(",");
-// Serial.print(sensorValue_5);
-// Serial.println();
- //delay(500);
- delay(250);
-
+ bool started = updateValues(sensorValues, 6);
+ if (!started) {
+  return;
+ }
+ start = millis();
+ while (millis() - start < TIME_FRAME) {
+  updateValues(sensorValues, 6);
+ }
+ printArray(sensorValues, 6);
+ initValues(sensorValues, 6);
+ start = millis();
 }
