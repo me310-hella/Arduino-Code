@@ -32,10 +32,10 @@ sensorValueRight = analogRead(sensorPinRight);
 
 if(sensorValueLeft > THRESHOLD || sensorValueRight > THRESHOLD){
   if(sensorValueLeft > sensorValueRight){
-    Serial.print("prev\n");
+    Serial.print("next\n");
   }
   else {
-     Serial.print("next\n");
+     Serial.print("prev\n");
   }
 
   //Serial.println(sensorValue);

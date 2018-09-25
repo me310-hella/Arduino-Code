@@ -26,7 +26,6 @@ int value_dr, value_dl;
 int threshold = 1;
 bool blocking = false;
 long timeFrameStart;
-long events[2];
 
 void initTimeFrame(){
   //Serial.println("init time frame");
